@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Список записей</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h2>Список записей в парикмахерскую</h2>
+    
+    {% if appointments|length > 0 %}
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Имя</th>
+                <th>Телефон</th>
+                <th>Услуга</th>
+                <th>Мастер</th>
+                <th>Дата и время</th>
+            </tr>
+            
+            {% for appointment in appointments %}
+                <tr>
+                    <td>{{ appointment.id }}</td>
+                    <td>{{ appointment.name }}</td>
+                    <td>{{ appointment.phone }}</td>
+                    <td>{{ appointment.service }}</td>
+                    <td>{{ appointment.master }}</td>
+                    <td>{{ appointment.datetime }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>Нет записей в базе данных.</p>
+    {% endif %}
+    
+    <p><a href="/">Вернуться к форме записи</a></p>
+</body>
+</html>

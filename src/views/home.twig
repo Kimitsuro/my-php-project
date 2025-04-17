@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Запись в парикмахерскую</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+        }
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        h2 {
+            text-align: center;
+            color: #444;
+            margin-bottom: 20px;
+        }
+        label {
+            display: flex;
+            flex-direction: column;
+            font-size: 14px;
+        }
+        input[type="text"], input[type="datetime-local"], select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+            color: #007BFF;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        div[style="color: red;"] {
+            margin-top: 15px;
+            padding: 10px;
+            border: 1px solid #f5c6cb;
+            background-color: #f8d7da;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Форма записи</h2>
+    <form action="/appointments" method="post">
+        <label>Имя: <input type="text" name="name" required></label>
+        <label>Телефон: <input type="text" name="phone" required></label>
+        <label>Выберите услугу:
+            <select name="service">
+                <option value="Стрижка">Стрижка</option>
+                <option value="Окрашивание">Окрашивание</option>
+                <option value="Укладка">Укладка</option>
+            </select>
+        </label>
+        <label>Выберите мастера:
+            <select name="master">
+                <option value="Анна">Анна</option>
+                <option value="Иван">Иван</option>
+                <option value="Мария">Мария</option>
+            </select>
+        </label>
+        <label>Дата и время: <input type="datetime-local" name="datetime" required></label>
+        <input type="submit" value="Записаться">
+    </form>
+
+    {% if errors is defined and errors|length > 0 %}
+        <div style="color: red;">
+            {% for error in errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <p><a href="/appointments">Просмотреть все записи</a></p>
+    <p><a href="/update">Обновить запись по номеру телефона</a></p>
+</body>
+</html>

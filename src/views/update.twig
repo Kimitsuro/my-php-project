@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Обновление записи</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        h2, h3 {
+            color: #333;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="datetime-local"], select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="submit"], button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 5px 0;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        input[type="submit"]:hover, button:hover {
+            background-color: #45a049;
+        }
+        a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .error {
+            color: red;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Поиск и обновление записи</h2>
+    
+    <form method="get" action="/update">
+        <label>Поиск по телефону: 
+            <input type="text" name="phone" required placeholder="Введите телефон" value="{{ phone }}">
+        </label>
+        <input type="submit" name="search" value="Найти">
+    </form>
+    
+    {% if appointments is defined %}
+        {% if appointments|length > 0 %}
+            <h3>Найденные записи:</h3>
+            <table>
+                <tr>
+                    <th>Имя</th>
+                    <th>Телефон</th>
+                    <th>Услуга</th>
+                    <th>Мастер</th>
+                    <th>Дата и время</th>
+                    <th>Действие</th>
+                </tr>
+                {% for appointment in appointments %}
+                <tr>
+                    <td>{{ appointment.name }}</td>
+                    <td>{{ appointment.phone }}</td>
+                    <td>{{ appointment.service }}</td>
+                    <td>{{ appointment.master }}</td>
+                    <td>{{ appointment.datetime }}</td>
+                    <td>
+                        <form method="post" action="/update/edit">
+                            <input type="hidden" name="id" value="{{ appointment.id }}">
+                            <button type="submit" name="edit">Редактировать</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>Записи не найдены.</p>
+        {% endif %}
+    {% endif %}
+    
+    {% if appointment is defined %}
+        <h3>Редактирование записи</h3>
+        <form method="post" action="/update">
+            <input type="hidden" name="id" value="{{ appointment.id }}">
+            
+            <label>Имя: 
+                <input type="text" name="name" value="{{ appointment.name }}" required>
+            </label>
+            
+            <label>Телефон: 
+                <input type="text" name="phone" value="{{ appointment.phone }}" required>
+            </label>
+            
+            <label>Услуга:
+                <select name="service">
+                    <option value="Стрижка" {{ appointment.service == 'Стрижка' ? 'selected' }}>Стрижка</option>
+                    <option value="Окрашивание" {{ appointment.service == 'Окрашивание' ? 'selected' }}>Окрашивание</option>
+                    <option value="Укладка" {{ appointment.service == 'Укладка' ? 'selected' }}>Укладка</option>
+                </select>
+            </label>
+            
+            <label>Мастер:
+                <select name="master">
+                    <option value="Анна" {{ appointment.master == 'Анна' ? 'selected' }}>Анна</option>
+                    <option value="Иван" {{ appointment.master == 'Иван' ? 'selected' }}>Иван</option>
+                    <option value="Мария" {{ appointment.master == 'Мария' ? 'selected' }}>Мария</option>
+                </select>
+            </label>
+            
+            <label>Дата и время: 
+                <input type="datetime-local" name="datetime" value="{{ appointment.datetime|date('Y-m-d\\TH:i') }}" required>
+            </label>
+            
+            <input type="submit" name="update" value="Обновить">
+            <a href="/update">Отмена</a>
+        </form>
+    {% endif %}
+    
+    {% if errors is defined and errors|length > 0 %}
+        <div class="error">
+            {% for error in errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <p><a href="/">Вернуться на главную</a></p>
+</body>
+</html>
