@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Личный кабинет</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+        }
+        .form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+        h2 {
+            color: #444;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 14px;
+            margin: 10px 0;
+        }
+        a {
+            display: inline-block;
+            margin-top: 15px;
+            color: #007BFF;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .dropdown {
+            position: relative;
+            display: block;
+            margin-top: 15px; 
+        }
+        .dropdown a {
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            text-align: center;
+            display: block;
+            box-sizing: border-box;
+        }
+        .dropdown a:hover {
+            background-color: #45a049;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            border-radius: 4px;
+            z-index: 1;
+            box-sizing: border-box;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .dropdown-content a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 5px 0;
+        }
+        .dropdown-content a:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="form">
+        <h2>Личный кабинет</h2>
+        <p>Добро пожаловать, {{ user.username }}!</p>
+        <p>Ваша роль: {{ user.role }}</p>
+
+        <a href="/logout">Выйти</a>
+
+        {% if user.role == 'admin' %}
+            <div class="dropdown">
+                <a href="#" class="button">Дополнительные функции</a>
+                <div class="dropdown-content">
+                    <a href="/appointments">Просмотреть все записи</a>
+                    <a href="/update">Обновить запись по номеру телефона</a>
+                    <a href="/appointments-with-services">Просмотреть сервисы</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <p><a href="/">Вернуться на главную</a></p>
+</body>
+</html>

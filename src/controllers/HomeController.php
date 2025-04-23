@@ -18,7 +18,13 @@ class HomeController
 
     public function index()
     {
+        session_start();
+        $user = $_SESSION['user'] ?? null; // Проверяем, авторизован ли пользователь
         $services = $this->model->getServices(); // Получаем список услуг
-        return $this->view->render('home.twig', ['services' => $services]);
+    
+        return $this->view->render('home.twig', [
+            'services' => $services,
+            'user' => $user // Передаём данные о пользователе в шаблон
+        ]);
     }
 }

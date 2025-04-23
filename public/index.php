@@ -19,6 +19,7 @@ $appointmentServiceModel = new AppointmentServiceModel($db);
 $homeController = new App\Controllers\HomeController($appointmentModel, $view);
 $updateController = new App\Controllers\UpdateController($appointmentModel, $view, $request);
 $appointmentController = new App\Controllers\AppointmentController($appointmentModel, $appointmentServiceModel, $view, $request);
+$authController = new App\Controllers\AuthController(new App\Models\UserModel($db), $view, $request);
 
 // Настройка роутера
 $router = new Router();
@@ -49,6 +50,30 @@ $router->addRoute('GET', '/appointments', function() use ($appointmentController
 
 $router->addRoute('GET', '/appointments-with-services', function() use ($appointmentController) {
     return new \Symfony\Component\HttpFoundation\Response($appointmentController->listWithServices());
+});
+
+$router->addRoute('GET', '/register', function() use ($authController) {
+    return new \Symfony\Component\HttpFoundation\Response($authController->register());
+});
+
+$router->addRoute('POST', '/register', function() use ($authController) {
+    return new \Symfony\Component\HttpFoundation\Response($authController->register());
+});
+
+$router->addRoute('GET', '/login', function() use ($authController) {
+    return new \Symfony\Component\HttpFoundation\Response($authController->login());
+});
+
+$router->addRoute('POST', '/login', function() use ($authController) {
+    return new \Symfony\Component\HttpFoundation\Response($authController->login());
+});
+
+$router->addRoute('GET', '/profile', function() use ($authController) {
+    return new \Symfony\Component\HttpFoundation\Response($authController->profile());
+});
+
+$router->addRoute('GET', '/logout', function() use ($authController) {
+    return new \Symfony\Component\HttpFoundation\Response($authController->logout());
 });
 
 // Обработка запроса
