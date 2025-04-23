@@ -14,6 +14,7 @@ $view = new View(); // Инициализация шаблонизатора (Tw
 $db = new Database(require __DIR__ . '/../config/database.php'); // Инициализация базы данных
 $appointmentModel = new AppointmentModel($db); // Инициализация модели записи на прием
 $appointmentServiceModel = new AppointmentServiceModel($db);
+$reportController = new App\Controllers\ReportController($appointmentModel);
 
 // Инициализация контроллеров
 $homeController = new App\Controllers\HomeController($appointmentModel, $view);
@@ -74,6 +75,24 @@ $router->addRoute('GET', '/profile', function() use ($authController) {
 
 $router->addRoute('GET', '/logout', function() use ($authController) {
     return new \Symfony\Component\HttpFoundation\Response($authController->logout());
+});
+
+$router->addRoute('GET', '/report/pdf', function() use ($reportController) {
+    return $reportController->generatePdf();
+});
+
+$router->addRoute('GET', '/report/excel', function() use ($reportController) {
+    return $reportController->generateExcel();
+});
+
+$router->addRoute('GET', '/report/csv', function() use ($reportController) {
+    return $reportController->generateCsv();
+});
+
+$router->addRoute('GET', '/generate-csv', function (Request $request) {
+    $controller = new \App\Controllers\ReportController(new \App\Models\AppointmentModel());
+    $controller->generateCsv();
+    return new Response(); // Возвращаем пустой Response
 });
 
 // Обработка запроса

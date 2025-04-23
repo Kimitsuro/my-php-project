@@ -91,7 +91,18 @@ class AppointmentModel
 
     private function saveToCsv(array $data): void
     {
-        $file = fopen("data.csv", "a");
+        $filePath = "data.csv";
+        $fileExists = file_exists($filePath);
+    
+        // Открываем файл для записи
+        $file = fopen($filePath, "a");
+    
+        // Если файл только что создан, добавляем заголовки
+        if (!$fileExists) {
+            fputcsv($file, ['Имя', 'Телефон', 'Услуга', 'Мастер', 'Дата и время'], ";");
+        }
+    
+        // Записываем данные
         fputcsv($file, [
             $data['name'],
             $data['phone'],
@@ -99,6 +110,8 @@ class AppointmentModel
             $data['master'],
             $data['datetime']
         ], ";");
+    
+        // Закрываем файл
         fclose($file);
     }
 
