@@ -81,10 +81,10 @@
         <label>Имя: <input type="text" name="name" required></label>
         <label>Телефон: <input type="text" name="phone" required></label>
         <label>Выберите услугу:
-            <select name="service">
-                <option value="Стрижка">Стрижка</option>
-                <option value="Окрашивание">Окрашивание</option>
-                <option value="Укладка">Укладка</option>
+            <select name="service_id">
+                {% for service in services %}
+                    <option value="{{ service.id }}">{{ service.name }}</option>
+                {% endfor %}
             </select>
         </label>
         <label>Выберите мастера:
@@ -108,5 +108,6 @@
 
     <p><a href="/appointments">Просмотреть все записи</a></p>
     <p><a href="/update">Обновить запись по номеру телефона</a></p>
+    <p><a href="/appointments-with-services">Просмотреть сервисы</a></p>
 </body>
 </html>

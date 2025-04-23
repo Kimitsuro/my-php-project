@@ -2,18 +2,21 @@
 namespace App\Controllers;
 
 use App\Models\AppointmentModel;
+use App\Models\AppointmentServiceModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class AppointmentController
 {
     private $model;
+    private $serviceModel;
     private $view;
     private $request;
 
-    public function __construct(AppointmentModel $model, $view, Request $request)
+    public function __construct(AppointmentModel $model, AppointmentServiceModel $serviceModel, $view, Request $request)
     {
         $this->model = $model;
+        $this->serviceModel = $serviceModel;
         $this->view = $view;
         $this->request = $request;
     }
@@ -24,25 +27,32 @@ class AppointmentController
         return $this->view->render('appointments.twig', ['appointments' => $appointments]);
     }
 
+    public function listWithServices()
+    {
+        $appointments = $this->serviceModel->getAllWithServices();
+        return $this->view->render('appointments_with_services.twig', ['appointments' => $appointments]);
+    }
+
     public function create()
     {
         if ($this->request->getMethod() !== 'POST') {
             return new Response('Method Not Allowed', Response::HTTP_METHOD_NOT_ALLOWED);
         }
-
+    
         $data = $this->request->request->all();
         $errors = $this->validate($data);
-
+    
         if (!empty($errors)) {
-            return $this->view->render('home.twig', ['errors' => $errors, 'data' => $data]);
+            $services = $this->model->getServices(); // Получаем список услуг
+            return $this->view->render('home.twig', ['errors' => $errors, 'data' => $data, 'services' => $services]);
         }
-
+    
         if ($this->model->createAppointment($data)) {
             header('Content-Type: text/html; charset=utf-8');
             echo 'Запись сохранена! <a href="/">Назад</a>';
             exit;
         }
-
+    
         return new Response('Ошибка при сохранении записи', Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 

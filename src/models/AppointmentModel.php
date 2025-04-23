@@ -1,6 +1,8 @@
 <?php
 namespace App\Models;
 
+use App\Core\Database;
+
 class AppointmentModel
 {
     private $db;
@@ -18,32 +20,55 @@ class AppointmentModel
 
     public function createAppointment(array $data): bool
     {
-        $stmt = $this->db->getPdo()->prepare(
-            "INSERT INTO appointments (name, phone, service, master, datetime) 
-            VALUES (:name, :phone, :service, :master, :datetime)"
-        );
+        // Получаем название услуги по service_id
+        $stmt = $this->db->getPdo()->prepare("SELECT name FROM services WHERE id = :service_id");
+        $stmt->execute([':service_id' => $data['service_id']]);
+        $service = $stmt->fetchColumn();
+    
+        $stmt = $this->db->getPdo()->prepare("
+            INSERT INTO appointments (name, phone, service, service_id, master, datetime) 
+            VALUES (:name, :phone, :service, :service_id, :master, :datetime)
+        ");
+    
+        return $stmt->execute([
+            ':name' => $data['name'],
+            ':phone' => $data['phone'],
+            ':service' => $service, // Название услуги
+            ':service_id' => $data['service_id'], // ID услуги
+            ':master' => $data['master'],
+            ':datetime' => $data['datetime']
+        ]);
+    }
 
-        $this->saveToCsv($data);
-        
-        return $stmt->execute($data);
+    public function getServices(): array
+    {
+        $stmt = $this->db->getPdo()->query("SELECT id, name FROM services ORDER BY id ASC");
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     public function updateAppointment(array $data): bool
     {
-        $stmt = $this->db->getConnection()->prepare(
-            "UPDATE appointments 
+        // Получаем название услуги по service_id
+        $stmt = $this->db->getPdo()->prepare("SELECT name FROM services WHERE id = :service_id");
+        $stmt->execute([':service_id' => $data['service_id']]);
+        $service = $stmt->fetchColumn();
+    
+        $stmt = $this->db->getPdo()->prepare("
+            UPDATE appointments 
             SET name = :name, 
                 phone = :phone, 
-                service = :service, 
+                service = :service,
+                service_id = :service_id,
                 master = :master, 
                 datetime = :datetime 
-            WHERE id = :id"
-        );
-        
+            WHERE id = :id
+        ");
+    
         return $stmt->execute([
             ':name' => $data['name'],
             ':phone' => $data['phone'],
-            ':service' => $data['service'],
+            ':service' => $service, // Название услуги
+            ':service_id' => $data['service_id'], // ID услуги
             ':master' => $data['master'],
             ':datetime' => $data['datetime'],
             ':id' => $data['id']

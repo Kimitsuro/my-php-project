@@ -131,10 +131,12 @@
             </label>
             
             <label>Услуга:
-                <select name="service">
-                    <option value="Стрижка" {{ appointment.service == 'Стрижка' ? 'selected' }}>Стрижка</option>
-                    <option value="Окрашивание" {{ appointment.service == 'Окрашивание' ? 'selected' }}>Окрашивание</option>
-                    <option value="Укладка" {{ appointment.service == 'Укладка' ? 'selected' }}>Укладка</option>
+                <select name="service_id">
+                    {% for service in services %}
+                        <option value="{{ service.id }}" {{ appointment.service_id == service.id ? 'selected' }}>
+                            {{ service.name }}
+                        </option>
+                    {% endfor %}
                 </select>
             </label>
             

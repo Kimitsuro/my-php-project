@@ -33,31 +33,37 @@ class UpdateController
     {
         $id = (int)$this->request->request->get('id');
         $appointment = $this->model->findById($id);
-        
+        $services = $this->model->getServices(); // Получаем список услуг
+    
         if (!$appointment) {
             return new Response('Запись не найдена', Response::HTTP_NOT_FOUND);
         }
-        
-        return $this->view->render('update.twig', ['appointment' => $appointment]);
+    
+        return $this->view->render('update.twig', [
+            'appointment' => $appointment,
+            'services' => $services // Передаём список услуг в шаблон
+        ]);
     }
 
     public function update()
     {
         $data = $this->request->request->all();
         $errors = $this->validate($data);
-
+    
         if (!empty($errors)) {
             $appointment = $this->model->findById((int)$data['id']);
+            $services = $this->model->getServices(); // Получаем список услуг
             return $this->view->render('update.twig', [
                 'appointment' => $appointment,
+                'services' => $services,
                 'errors' => $errors
             ]);
         }
-
+    
         if ($this->model->updateAppointment($data)) {
             return new Response('Данные обновлены! <a href="/update">Назад</a>');
         }
-
+    
         return new Response('Ошибка при обновлении записи', Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 

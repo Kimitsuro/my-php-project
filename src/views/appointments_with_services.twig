@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Список записей</title>
+    <title>Список записей с услугами</title>
     <style>
         table {
             width: 100%;
@@ -23,7 +23,7 @@
     </style>
 </head>
 <body>
-    <h2>Список записей</h2>
+    <h2>Список записей с услугами</h2>
     
     {% if appointments|length > 0 %}
         <table>
@@ -31,15 +31,23 @@
                 <th>ID записи</th>
                 <th>Имя клиента</th>
                 <th>Телефон</th>
+                <th>Услуга</th>
+                <th>Цена</th>
+                <th>Длительность</th>
+                <th>Описание услуги</th>
                 <th>Мастер</th>
                 <th>Дата и время</th>
             </tr>
             
             {% for appointment in appointments %}
                 <tr>
-                    <td>{{ appointment.id }}</td>
-                    <td>{{ appointment.name }}</td>
+                    <td>{{ appointment.appointment_id }}</td>
+                    <td>{{ appointment.client_name }}</td>
                     <td>{{ appointment.phone }}</td>
+                    <td>{{ appointment.service_name }}</td>
+                    <td>{{ appointment.price }}</td>
+                    <td>{{ appointment.duration }}</td>
+                    <td>{{ appointment.description }}</td>
                     <td>{{ appointment.master }}</td>
                     <td>{{ appointment.datetime }}</td>
                 </tr>
@@ -48,7 +56,7 @@
     {% else %}
         <p>Нет записей в базе данных.</p>
     {% endif %}
-
-    <p><a href="/">Вернуться на главную</a></p>
+    
+    <p><a href="/">Вернуться к форме записи</a></p>
 </body>
 </html>

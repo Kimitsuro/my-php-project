@@ -18,6 +18,7 @@ class HomeController
 
     public function index()
     {
-        return $this->view->render('home.twig');
+        $services = $this->model->getServices(); // Получаем список услуг
+        return $this->view->render('home.twig', ['services' => $services]);
     }
 }
